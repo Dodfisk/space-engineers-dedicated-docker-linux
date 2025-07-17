@@ -1,0 +1,13 @@
+services:
+  se-server:
+    build: .
+    container_name: space-engineers-dedicated-docker-linux
+    restart: unless-stopped
+    volumes:
+      - ./appdata/space-engineers/config/World:/appdata/space-engineers/config/World
+      - ./appdata/space-engineers/config/SpaceEngineers-Dedicated.cfg:/appdata/space-engineers/bins/SpaceEngineersDedicated/SpaceEngineers-Dedicated.cfg
+      - ./appdata/space-engineers/bins/SpaceEngineersDedicated:/appdata/space-engineers/bins/SpaceEngineersDedicated
+      - ./appdata/space-engineers/bins/steamcmd:/home/se/.steam
+      - ./appdata/space-engineers/bins/win-steamcmd:/home/se/win-steamcmd
+      - ./appdata/space-engineers/wineprefix:/wineprefix
+      - ./appdata/space-engineers/saves:/root/.SpaceEngineersDedicated

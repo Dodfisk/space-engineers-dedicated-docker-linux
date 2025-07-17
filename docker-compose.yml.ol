@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   se-server:
     image: mmmaxwwwell/space-engineers-dedicated-docker-linux:latest

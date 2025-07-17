@@ -25,6 +25,15 @@ RUN apt install -y --install-recommends \
         cabextract \
         unzip
 
+# Install Windows version of SteamCMD (into wine prefix) as it may be needed to get around some mod loading issues
+USER se
+WORKDIR /home/se
+RUN mkdir -p /home/se/win-steamcmd && \
+    curl -Lo steamcmd.zip https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip && \
+    unzip steamcmd.zip -d /home/se/win-steamcmd && \
+    rm steamcmd.zip && \
+    wine /home/se/win-steamcmd/steamcmd.exe +quit
+
 # Add user and set up wine prefix
 RUN adduser se --disabled-password --gecos "" && \
     mkdir -p /wineprefix && \

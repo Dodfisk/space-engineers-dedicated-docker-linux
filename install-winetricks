@@ -1,9 +1,41 @@
 #!/bin/bash
+
+set -euo pipefail
+
+export WINEARCH=win64
+export WINEDEBUG=-all
+export WINEPREFIX=/wineprefix
+export DISPLAY=:5.0
+
+echo "[INFO] Starting virtual X server..."
 Xvfb :5 -screen 0 1024x768x16 &
-env WINEARCH=win64 WINEDEBUG=-all WINEDLLOVERRIDES="mscoree=d" WINEPREFIX=/wineprefix wineboot --init /nogui 
-env WINEARCH=win64 WINEDEBUG=-all WINEPREFIX=/wineprefix ./winetricks corefonts 
-env DISPLAY=:5.0 WINEARCH=win64 WINEDEBUG=-all WINEPREFIX=/wineprefix ./winetricks -q vcrun2017 
-env DISPLAY=:5.0 WINEARCH=win64 WINEDEBUG=-all WINEPREFIX=/wineprefix ./winetricks -q --force dotnet48 
-env WINEARCH=win64 WINEDEBUG=-all WINEPREFIX=/wineprefix ./winetricks sound=disabled 
-env DISPLAY=:5.0 WINEARCH=win64 WINEDEBUG=-all WINEPREFIX=/wineprefix ./winetricks -q vcrun2013 
+XVFB_PID=$!
+
+# Give Xvfb time to initialize
+sleep 2
+
+echo "[INFO] Initializing Wine prefix..."
+env WINEDLLOVERRIDES="mscoree=d" wineboot --init
+
+echo "[INFO] Installing core fonts..."
+./winetricks -q corefonts
+
+echo "[INFO] Installing VC++ 2017 runtime..."
+./winetricks -q vcrun2017
+
+echo "[INFO] Installing .NET Framework 4.8..."
+./winetricks -q --force dotnet48
+
+echo "[INFO] Disabling Wine sound..."
+./winetricks -q sound=disabled
+
+echo "[INFO] Installing VC++ 2013 runtime..."
+./winetricks -q vcrun2013
+
+echo "[INFO] Cleaning up Winetricks cache..."
 rm -rf ~/.cache
+
+echo "[INFO] Killing Xvfb..."
+kill $XVFB_PID
+
+echo "[SUCCESS] Winetricks installation complete."
